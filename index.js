@@ -23,6 +23,25 @@ async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
+    // work
+
+    const marathonUserCalection = client
+      .db("marathon-play")
+      .collection("users");
+    //
+    app.get("/user", async (req, res) => {
+      const users = marathonUserCalection.find();
+      const result = await users.toArray();
+      res.send(result);
+    });
+    //
+    app.post("/user", async (req, res) => {
+      const newUser = req.body;
+      const result = await marathonUserCalection.insertOne(newUser);
+      res.send(result);
+    });
+
+    // work
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log(
@@ -30,7 +49,7 @@ async function run() {
     );
   } finally {
     // Ensures that the client will close when you finish/error
-    await client.close();
+    // await client.close();
   }
 }
 run().catch(console.dir);
