@@ -3,7 +3,7 @@ const cors = require("cors");
 const app = express();
 require("dotenv").config();
 const port = process.env.PORT || 3000;
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 
 app.use(cors());
 app.use(express.json());
@@ -28,10 +28,22 @@ async function run() {
     const marathonUserCalection = client
       .db("marathon-play")
       .collection("users");
+    const dataCalection = client.db("marathon-play").collection("marathons");
     //
     app.get("/user", async (req, res) => {
       const users = marathonUserCalection.find();
       const result = await users.toArray();
+      res.send(result);
+    });
+    app.get("/data", async (req, res) => {
+      const users = dataCalection.find();
+      const result = await users.toArray();
+      res.send(result);
+    });
+    app.get("/data/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await dataCalection.findOne(query);
       res.send(result);
     });
     //
@@ -40,7 +52,19 @@ async function run() {
       const result = await marathonUserCalection.insertOne(newUser);
       res.send(result);
     });
-
+    // app.put("/data/:id", async (req, res) => {
+    //   const id = req.params.id;
+    //   const filter = { _id: new ObjectId(id) };
+    //   const options = { upsert: true };
+    //   const data = req.body;
+    //   const item = {
+    //     $set: {
+    //       user_email: data.userEmail,
+    //     },
+    //   };
+    //   const result = await dataCalection.updateOne(filter, item, options);
+    //   res.send(result);
+    // });
     // work
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
