@@ -55,22 +55,47 @@ async function run() {
       const result = await marathonUserCalection.insertOne(newUser);
       res.send(result);
     });
-    // app.put("/data/:id", async (req, res) => {
+    // app.patch("/data/:id", async (req, res) => {
     //   const id = req.params.id;
     //   const filter = { _id: new ObjectId(id) };
     //   const options = { upsert: true };
     //   const data = req.body;
-    //   const item = {
+    //   console.log(data.counter, filter);
+    //   const updetedData = {
     //     $set: {
-    //       user_email: data.userEmail,
+    //       total_registration_count: total_registration_count + data.counter,
     //     },
     //   };
-    //   const result = await dataCalection.updateOne(filter, item, options);
+    //   const result = await dataCalection.updateOne(
+    //     filter,
+    //     updetedData,
+    //     options
+    //   );
     //   res.send(result);
     // });
     app.post("/participer", async (req, res) => {
       const newParticiper = req.body;
       const result = await participerColection.insertOne(newParticiper);
+      res.send(result);
+    });
+    // incriment counter
+    app.post("/data/:id", async (req, res) => {
+      const updatedCount = req.body;
+      const query = { _id: new ObjectId(updatedCount?._id) };
+      const filter = await dataCalection.findOne(query);
+      let total_registration_count = 0;
+      if (filter?.total_registration_count) {
+        total_registration_count = filter?.total_registration_count + 1;
+      } else {
+        total_registration_count = 1;
+      }
+      const updatedDoc = {
+        $set: {
+          total_registration_count,
+          register_email: updatedCount?.email,
+        },
+      };
+      const result = await dataCalection.updateOne(filter, updatedDoc);
       res.send(result);
     });
     // work
