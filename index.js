@@ -29,6 +29,9 @@ async function run() {
       .db("marathon-play")
       .collection("users");
     const dataCalection = client.db("marathon-play").collection("marathons");
+    const participerColection = client
+      .db("marathon-play")
+      .collection("participer");
     //
     app.get("/user", async (req, res) => {
       const users = marathonUserCalection.find();
@@ -65,6 +68,11 @@ async function run() {
     //   const result = await dataCalection.updateOne(filter, item, options);
     //   res.send(result);
     // });
+    app.post("/participer", async (req, res) => {
+      const newParticiper = req.body;
+      const result = await participerColection.insertOne(newParticiper);
+      res.send(result);
+    });
     // work
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
