@@ -49,6 +49,18 @@ async function run() {
       const result = await dataCalection.findOne(query);
       res.send(result);
     });
+    app.get("/participer", async (req, res) => {
+      const participers = participerColection.find();
+      const result = await participers.toArray();
+      res.send(result);
+    });
+    app.get("/participer/:email", async (req, res) => {
+      const email = req.params?.email;
+      const query = { email: email };
+      const data = participerColection.find(query);
+      const result = await data.toArray();
+      res.send(result);
+    });
     //
     app.post("/user", async (req, res) => {
       const newUser = req.body;
