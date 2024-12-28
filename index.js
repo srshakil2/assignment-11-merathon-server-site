@@ -67,27 +67,37 @@ async function run() {
       const result = await marathonUserCalection.insertOne(newUser);
       res.send(result);
     });
-    // app.patch("/data/:id", async (req, res) => {
-    //   const id = req.params.id;
-    //   const filter = { _id: new ObjectId(id) };
-    //   const options = { upsert: true };
-    //   const data = req.body;
-    //   console.log(data.counter, filter);
-    //   const updetedData = {
-    //     $set: {
-    //       total_registration_count: total_registration_count + data.counter,
-    //     },
-    //   };
-    //   const result = await dataCalection.updateOne(
-    //     filter,
-    //     updetedData,
-    //     options
-    //   );
-    //   res.send(result);
-    // });
+
     app.post("/participer", async (req, res) => {
       const newParticiper = req.body;
       const result = await participerColection.insertOne(newParticiper);
+      res.send(result);
+    });
+    // Update user marathon details
+    app.post("/participer/:id", async (req, res) => {
+      const updatePartisiper = req.body;
+      const query = { _id: new ObjectId(updatePartisiper?.id) };
+      const options = { upsert: true };
+      const updateDoc = {
+        $set: {
+          firstName: updatePartisiper?.firstName,
+          lastName: updatePartisiper?.lastName,
+          contact: updatePartisiper?.contact,
+          info: updatePartisiper?.info,
+        },
+      };
+      const result = await participerColection.updateOne(
+        query,
+        updateDoc,
+        options
+      );
+      res.send(result);
+    });
+    // delete user ditails
+    app.delete("/participer/:id", async (req, res) => {
+      const deleteInfo = req.params;
+      const queryId = { _id: new ObjectId(deleteInfo?.id) };
+      const result = await participerColection.deleteOne(queryId);
       res.send(result);
     });
     // incriment counter
@@ -95,6 +105,7 @@ async function run() {
       const updatedCount = req.body;
       const query = { _id: new ObjectId(updatedCount?._id) };
       const filter = await dataCalection.findOne(query);
+      console.log(filter);
       let total_registration_count = 0;
       if (filter?.total_registration_count) {
         total_registration_count = filter?.total_registration_count + 1;
@@ -107,7 +118,8 @@ async function run() {
           register_email: updatedCount?.email,
         },
       };
-      const result = await dataCalection.updateOne(filter, updatedDoc);
+      console.log(updatedCount, total_registration_count);
+      const result = await dataCalection.updateOne(query, updatedDoc);
       res.send(result);
     });
     // work
