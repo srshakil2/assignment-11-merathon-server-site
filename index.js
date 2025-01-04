@@ -56,7 +56,7 @@ async function run() {
       const result = await dataCalection.findOne(query);
       res.send(result);
     });
-    // todo
+    //
     app.get("/data/singeldata/:email", async (req, res) => {
       const email = req.params.email;
       // console.log(email);
@@ -79,6 +79,16 @@ async function run() {
       const query = { email: email };
       const data = participerColection.find(query);
       const result = await data.toArray();
+      res.send(result);
+    });
+    // Todo
+    app.get("/participer/singeldata/:id", async (req, res) => {
+      const id = req.params.id;
+      // console.log(email);
+      const query = { _id: new ObjectId(id) };
+      // console.log(query);
+      const result = await participerColection.find(query).toArray();
+      // console.log(result);
       res.send(result);
     });
     //
