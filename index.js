@@ -142,7 +142,7 @@ async function run() {
     app.delete("/data/deleteOne/:id", async (req, res) => {
       const data = req.params.id;
       const query = { _id: new ObjectId(data) };
-      console.log(data, query);
+      // console.log(data, query);
       const result = await dataCalection.deleteOne(query);
       res.send(result);
     });
